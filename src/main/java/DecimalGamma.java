@@ -1,3 +1,5 @@
+import java.lang.reflect.Array;
+
 public class DecimalGamma {
 
     public static BitSequence Encode(DecimalDecomposition d) {
@@ -61,6 +63,7 @@ public class DecimalGamma {
         return s;
     }
 
+    // TODO: Replace with log table
     private static int log2(int x) {
         return (int) (Math.log(x) / Math.log(2));
     }
