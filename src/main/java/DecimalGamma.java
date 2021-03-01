@@ -4,6 +4,8 @@ public class DecimalGamma {
         return DecimalGamma.Encode(new StringDecomposition(d));
     }
 
+    // Largely ported from the C++ implementation found on
+    // https://github.com/ghislainfourny/decimalgamma-cpp
     public static BitSequence Encode(DecimalDecomposition d) {
         BitSequence s = new BitSequence();
 
