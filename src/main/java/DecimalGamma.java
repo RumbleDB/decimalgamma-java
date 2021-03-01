@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class DecimalGamma {
 
     public static BitSequence Encode(String d) {
@@ -57,6 +59,100 @@ public class DecimalGamma {
         return s;
     }
 
+    public static DecimalDecomposition Decode(String bits) {
+        return DecimalGamma.Decode(new BitSequence(bits));
+    }
+
+    public static DecimalDecomposition Decode(int bits, int n) {
+        return DecimalGamma.Decode(new BitSequence(bits, n));
+    }
+
+    // TODO: Fix exceptions (custom class, checked)
+    // TODO Lots of unsafe stuff
+    public static DecimalDecomposition Decode(BitSequence b) {
+        LiteralDecomposition d = new LiteralDecomposition();
+
+        Boolean[] bytes = b.rawBites();
+
+        if (bytes.length < 2) throw new RuntimeException("too short");
+
+        if (b.getBytes(0, 2) == 0b10 && bytes.length == 2) {
+            d.isZero = true;
+
+            return d;
+        }
+
+        if (!bytes[0] && !bytes[1]) {
+            d.isPositive = false;
+        } else if (bytes[0] && !bytes[1]) {
+            d.isPositive = true;
+        } else {
+            throw new RuntimeException("again something broken");
+        }
+
+        d.isExponentNonNegative = d.isPositive == bytes[2];
+
+        int exponentLength = 1;
+        while (bytes[exponentLength + 1] == bytes[exponentLength + 2]) exponentLength++;
+
+        if (!bytes[2]) {
+            for (int i = 2; i < 2 + 2 * exponentLength + 1; i++) {
+                bytes[i] = !bytes[i];
+            }
+        }
+
+        d.absoluteExponent = 1;
+        for (int i = 1; i < exponentLength + 1; i++) {
+            int offset = 2 + exponentLength + i;
+
+            d.absoluteExponent = d.absoluteExponent * 2 + toInt(bytes[offset]);
+        }
+
+        d.absoluteExponent -= 2;
+
+        if (d.absoluteExponent < 0 || d.absoluteExponent == 0 && !d.isExponentNonNegative)
+            throw new RuntimeException("again");
+
+        ArrayList<Integer> digits = new ArrayList<>();
+        int nextOffset = 2 + 2 * exponentLength + 1;
+
+        // First digit
+        digits.add(toInt(bytes[nextOffset]) * 8
+                + toInt(bytes[nextOffset + 1]) * 4
+                + toInt(bytes[nextOffset + 2]) * 2
+                + toInt(bytes[nextOffset + 3]));
+
+        nextOffset += 4;
+
+        // Remaining triplets
+        while (nextOffset < bytes.length) {
+            int num = b.getBytes(nextOffset, 10);
+
+            if (num < 0 || num > 999) throw new RuntimeException("ahhh");
+
+            digits.add(num / 100);
+            digits.add((num / 10) % 10);
+            digits.add(num % 10);
+
+            nextOffset += 10;
+        }
+
+        for (int i = digits.size() - 1; i > 0; i--) {
+            if (digits.get(i) != 0) break;
+
+            digits.remove(i);
+        }
+
+        d.digits = digits.stream().mapToInt(i -> i).toArray();
+        if (!d.isPositive) d.digits = invert(d.digits);
+
+        return d;
+    }
+
+    private static int toInt(boolean x) {
+        return x ? 1 : 0;
+    }
+
     // TODO: Replace with log table
     private static int log2(int x) {
         return (int) (Math.log(x) / Math.log(2));
@@ -79,3 +175,4 @@ public class DecimalGamma {
         return out;
     }
 }
+

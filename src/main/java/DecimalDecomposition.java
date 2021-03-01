@@ -9,3 +9,4 @@ public interface DecimalDecomposition {
 
     int[] getDigits();
 }
+

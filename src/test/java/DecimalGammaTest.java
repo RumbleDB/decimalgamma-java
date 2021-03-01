@@ -1,9 +1,12 @@
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
+
+// TODO: Invalid encodings
 
 class DecimalGammaTest {
 
@@ -37,7 +40,23 @@ class DecimalGammaTest {
 
             assertEquals(Double.compare(a, b), encodedA.toString().compareTo(encodedB.toString()), a + " " + b);
         }
+    }
 
+    @Test
+    void testIntegerInverse() {
+        for (int i = -neighborIterations; i < neighborIterations; i++) {
+            validateInverse(String.valueOf(i));
+        }
+    }
+
+    @Test
+    void testFuzzyInverse() {
+        Random r = new Random(seed);
+
+        for (int i = 0; i < fuzzyIterations; i++) {
+            double a = nextRandom(r);
+            validateInverse(new BigDecimal(a).toPlainString());
+        }
     }
 
     @Test
@@ -87,9 +106,20 @@ class DecimalGammaTest {
         validateEncoding("1011100100001001110101010001101111101111010", "123456789");
     }
 
+    @Test
+    void testInvalidEncodings() {
+//        validateEncoding("10", "0");
+    }
+
     void validateEncoding(String expected, String input) {
         BitSequence output = DecimalGamma.Encode(input);
         assertEquals(expected.replace(" ", ""), output.toString(), input);
+
+        validateInverse(input);
+    }
+
+    void validateInverse(String input) {
+        assertEquals(input, DecimalGamma.Decode(DecimalGamma.Encode(input)).toString());
     }
 
 
