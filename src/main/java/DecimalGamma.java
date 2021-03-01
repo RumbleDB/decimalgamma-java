@@ -1,6 +1,8 @@
-import java.lang.reflect.Array;
-
 public class DecimalGamma {
+
+    public static BitSequence Encode(String d) {
+        return DecimalGamma.Encode(new StringDecomposition(d));
+    }
 
     public static BitSequence Encode(DecimalDecomposition d) {
         BitSequence s = new BitSequence();
@@ -27,20 +29,17 @@ public class DecimalGamma {
             s.appendBits(abs_offset_exponent - (1 << (le - 1)), le - 1);
         }
 
-        // TODO: Mismatch paper / cpp implementation
-        // invert digits / triplets individually or entirely?
         int[] digits = d.getDigits();
-        int first = digits[0];
         if (!d.isPositive()) {
-            first = 10 - first;
+            digits = invert(digits);
         }
 
+        int first = digits[0];
         s.appendBits(first, 4);
 
         int next = 1;
         while (next < digits.length) {
             int a = digits[next++], b = 0, c = 0;
-            boolean isLast = (next + 3 >= digits.length);
             if (next < digits.length) {
                 b = digits[next++];
             }
@@ -49,13 +48,6 @@ public class DecimalGamma {
             }
 
             int toWrite = 100 * a + 10 * b + c;
-            if (!d.isPositive()) {
-                if (isLast) {
-                    toWrite = 1000 - toWrite;
-                } else {
-                    toWrite = 999 - toWrite;
-                }
-            }
 
             s.appendBits(toWrite, 10);
         }
@@ -66,5 +58,22 @@ public class DecimalGamma {
     // TODO: Replace with log table
     private static int log2(int x) {
         return (int) (Math.log(x) / Math.log(2));
+    }
+
+    private static int[] invert(int[] num) {
+        int[] out = new int[num.length];
+        boolean carry = false;
+        for (int i = num.length - 1; i >= 0; i--) {
+            out[i] = 10 - num[i];
+            if (carry) out[i]--;
+
+            if (out[i] == 10) {
+                out[i] = 0;
+                carry = false;
+            } else {
+                carry = true;
+            }
+        }
+        return out;
     }
 }

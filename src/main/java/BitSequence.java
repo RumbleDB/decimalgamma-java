@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
 public class BitSequence {
-    private ArrayList<Boolean> bites = new ArrayList<>();
+    private final ArrayList<Boolean> bites = new ArrayList<>();
 
     public void appendBits(int bits, int n) {
         ArrayList<Boolean> append = new ArrayList<>(n);
