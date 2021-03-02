@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
 public class BitSequence {
-    private final ArrayList<Boolean> bites = new ArrayList<>();
+    private final ArrayList<Boolean> bits = new ArrayList<>();
 
     public BitSequence(String bits) {
         for (char b : bits.toCharArray()) {
@@ -29,18 +29,18 @@ public class BitSequence {
             bits /= 2;
         }
 
-        bites.addAll(append);
+        this.bits.addAll(append);
     }
 
-    public Boolean[] rawBites() {
-        return this.bites.toArray(new Boolean[0]);
+    public int length() {
+        return this.bits.size();
     }
 
-    public int getBytes(int i, int n) {
+    public int getBits(int i, int n) {
         n += i;
         int out = 0;
         for (; i < n; i++) {
-            out = out * 2 + (this.bites.get(i) ? 1 : 0);
+            out = out * 2 + (this.bits.get(i) ? 1 : 0);
         }
 
         return out;
@@ -49,7 +49,7 @@ public class BitSequence {
     @Override
     public String toString() {
         StringBuilder out = new StringBuilder();
-        for (Boolean b : this.bites) {
+        for (Boolean b : this.bits) {
             out.append(b ? "1" : "0");
         }
         return out.toString();

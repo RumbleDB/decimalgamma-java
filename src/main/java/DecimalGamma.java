@@ -1,3 +1,4 @@
+import java.text.ParseException;
 import java.util.ArrayList;
 
 public class DecimalGamma {
@@ -59,76 +60,84 @@ public class DecimalGamma {
         return s;
     }
 
-    public static DecimalDecomposition Decode(String bits) {
+    public static DecimalDecomposition Decode(String bits) throws ParseException {
         return DecimalGamma.Decode(new BitSequence(bits));
     }
 
-    public static DecimalDecomposition Decode(int bits, int n) {
+    public static DecimalDecomposition Decode(int bits, int n) throws ParseException {
         return DecimalGamma.Decode(new BitSequence(bits, n));
     }
 
-    // TODO: Fix exceptions (custom class, checked)
-    // TODO Lots of unsafe stuff
-    public static DecimalDecomposition Decode(BitSequence b) {
+    public static DecimalDecomposition Decode(BitSequence b) throws ParseException {
         LiteralDecomposition d = new LiteralDecomposition();
 
-        Boolean[] bytes = b.rawBites();
+        int length = b.length();
 
-        if (bytes.length < 2) throw new RuntimeException("too short");
+        if (length < 2) throw new ParseException("expected at least 2 bits", 0);
 
-        if (b.getBytes(0, 2) == 0b10 && bytes.length == 2) {
+        if (b.getBits(0, 2) == 0b10 && length == 2) {
             d.isZero = true;
 
             return d;
         }
 
-        if (!bytes[0] && !bytes[1]) {
-            d.isPositive = false;
-        } else if (bytes[0] && !bytes[1]) {
-            d.isPositive = true;
-        } else {
-            throw new RuntimeException("again something broken");
-        }
+        if (b.getBits(0, 2) == 0b00) d.isPositive = false;
+        else if (b.getBits(0, 2) == 0b10) d.isPositive = true;
+        else throw new ParseException("invalid sign bits: must be either 00 or 10", 0);
 
-        d.isExponentNonNegative = d.isPositive == bytes[2];
+        d.isExponentNonNegative = d.isPositive == (b.getBits(2, 1) == 0b1);
 
         int exponentLength = 1;
-        while (bytes[exponentLength + 1] == bytes[exponentLength + 2]) exponentLength++;
+        while (true) {
+            if (exponentLength + 2 >= length)
+                throw new ParseException("exponent length encoding not delimited", 2);
 
-        if (!bytes[2]) {
-            for (int i = 2; i < 2 + 2 * exponentLength + 1; i++) {
-                bytes[i] = !bytes[i];
-            }
+            if (b.getBits(exponentLength + 1, 1) != b.getBits(exponentLength + 2, 1))
+                break;
+
+            exponentLength++;
         }
 
-        d.absoluteExponent = 1;
-        for (int i = 1; i < exponentLength + 1; i++) {
-            int offset = 2 + exponentLength + i;
+        boolean inverse = b.getBits(2, 1) == 0b0;
 
-            d.absoluteExponent = d.absoluteExponent * 2 + toInt(bytes[offset]);
+        if (3 + 2 * exponentLength > length)
+            throw new ParseException("not enough bits for exponent encoding", 3);
+
+        d.absoluteExponent = 1; // first digit is always 1
+        for (int i = 3 + exponentLength; i < 3 + 2 * exponentLength; i++) {
+            d.absoluteExponent *= 2;
+            d.absoluteExponent += inverse ? 1 - b.getBits(i, 1) : b.getBits(i, 1);
         }
 
         d.absoluteExponent -= 2;
 
-        if (d.absoluteExponent < 0 || d.absoluteExponent == 0 && !d.isExponentNonNegative)
-            throw new RuntimeException("again");
+        if (d.absoluteExponent < 0)
+            throw new ParseException("absolute exponent cannot be negative", 2);
+
+        if (d.absoluteExponent == 0 && !d.isExponentNonNegative)
+            throw new ParseException("if absolute exponent is 0, the exponent sign must be positive", 2);
 
         ArrayList<Integer> digits = new ArrayList<>();
         int nextOffset = 2 + 2 * exponentLength + 1;
 
         // First digit
-        digits.add(toInt(bytes[nextOffset]) * 8
-                + toInt(bytes[nextOffset + 1]) * 4
-                + toInt(bytes[nextOffset + 2]) * 2
-                + toInt(bytes[nextOffset + 3]));
+        if (nextOffset + 4 > length)
+            throw new ParseException("significand must be at least 4 bits", nextOffset);
+        int num = b.getBits(nextOffset, 4);
+        if (num < 0 || num > 9)
+            throw new ParseException("first digit of significant must be between 0 and 9 (inclusive)", nextOffset);
 
+        digits.add(num);
         nextOffset += 4;
 
         // Remaining triplets
-        while (nextOffset < bytes.length) {
-            int num = b.getBytes(nextOffset, 10);
+        while (nextOffset < length) {
+            if (nextOffset + 10 > length)
+                throw new ParseException("each non-initial digit-triplet of significand must be 10 bits", nextOffset);
 
-            if (num < 0 || num > 999) throw new RuntimeException("ahhh");
+            num = b.getBits(nextOffset, 10);
+            if (num < 0 || num > 999)
+                throw new ParseException("significant triplet must be between 0 and 999 (inclusive)", nextOffset);
 
             digits.add(num / 100);
             digits.add((num / 10) % 10);
@@ -149,10 +158,6 @@ public class DecimalGamma {
         return d;
     }
 
-    private static int toInt(boolean x) {
-        return x ? 1 : 0;
-    }
-
     // TODO: Replace with log table
     private static int log2(int x) {
         return (int) (Math.log(x) / Math.log(2));
@@ -160,18 +165,11 @@ public class DecimalGamma {
 
     private static int[] invert(int[] num) {
         int[] out = new int[num.length];
-        boolean carry = false;
         for (int i = num.length - 1; i >= 0; i--) {
             out[i] = 10 - num[i];
-            if (carry) out[i]--;
-
-            if (out[i] == 10) {
-                out[i] = 0;
-                carry = false;
-            } else {
-                carry = true;
-            }
+            if (i < num.length - 1) out[i]--;
         }
+
         return out;
     }
 }

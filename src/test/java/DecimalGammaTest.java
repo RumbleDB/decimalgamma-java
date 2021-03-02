@@ -1,12 +1,10 @@
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
-
-// TODO: Invalid encodings
 
 class DecimalGammaTest {
 
@@ -43,14 +41,14 @@ class DecimalGammaTest {
     }
 
     @Test
-    void testIntegerInverse() {
+    void testIntegerInverse() throws ParseException {
         for (int i = -neighborIterations; i < neighborIterations; i++) {
             validateInverse(String.valueOf(i));
         }
     }
 
     @Test
-    void testFuzzyInverse() {
+    void testFuzzyInverse() throws ParseException {
         Random r = new Random(seed);
 
         for (int i = 0; i < fuzzyIterations; i++) {
@@ -60,7 +58,7 @@ class DecimalGammaTest {
     }
 
     @Test
-    void testEncode() {
+    void testEncode() throws ParseException {
         validateEncoding("00 001 11 1000 1111001000", "-103.2");
         validateEncoding("00 110 00 0101 1110110110", "-0.0405");
         validateEncoding("10 01 0 0111 0001000111 0000111100", "0.707106");
@@ -108,17 +106,25 @@ class DecimalGammaTest {
 
     @Test
     void testInvalidEncodings() {
-//        validateEncoding("10", "0");
+        assertThrows(ParseException.class, () -> DecimalGamma.Decode(""), "no sign bit");
+        assertThrows(ParseException.class, () -> DecimalGamma.Decode("01"), "invalid sign");
+        assertThrows(ParseException.class, () -> DecimalGamma.Decode("10 00"), "exponent length encoding not delimited");
+        assertThrows(ParseException.class, () -> DecimalGamma.Decode("10 11110"), "not enough exponent bits");
+        assertThrows(ParseException.class, () -> DecimalGamma.Decode("10 011"), "negative exponent sign with absolute exponent value 0");
+        assertThrows(ParseException.class, () -> DecimalGamma.Decode("10 100 1"), "invalid length for first digit of significant");
+        assertThrows(ParseException.class, () -> DecimalGamma.Decode("10 100 1010"), "first digit of significant is 10 (invalid)");
+        assertThrows(ParseException.class, () -> DecimalGamma.Decode("10 100 1001 10"), "invalid length for non-initial digit triplet");
+        assertThrows(ParseException.class, () -> DecimalGamma.Decode("10 100 1001 1111101000"), "first triplet is 1000 (invalid)");
     }
 
-    void validateEncoding(String expected, String input) {
+    void validateEncoding(String expected, String input) throws ParseException {
         BitSequence output = DecimalGamma.Encode(input);
         assertEquals(expected.replace(" ", ""), output.toString(), input);
 
         validateInverse(input);
     }
 
-    void validateInverse(String input) {
+    void validateInverse(String input) throws ParseException {
         assertEquals(input, DecimalGamma.Decode(DecimalGamma.Encode(input)).toString());
     }
 
