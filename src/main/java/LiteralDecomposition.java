@@ -1,4 +1,4 @@
-public class LiteralDecomposition extends DecimalDec {
+public class LiteralDecomposition extends DecimalDecomposition {
 
     boolean isZero;
     boolean isPositive;

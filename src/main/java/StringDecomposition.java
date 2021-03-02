@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public class StringDecomposition extends DecimalDec {
+public class StringDecomposition extends DecimalDecomposition {
 
     private boolean positive = true;
     private int exponent = -1;

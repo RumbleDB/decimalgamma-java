@@ -2,7 +2,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class DecimalDecTest {
+class DecimalDecompositionTest {
 
     @Test
     void name() {

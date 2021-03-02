@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class DecimalGammaTest {
 
     static int seed = 0x123;
-    static int fuzzyIterations = 10000;
+    static int fuzzyIterations = 100000;
     static int neighborIterations = 100000;
 
     @Test
@@ -38,7 +38,7 @@ class DecimalGammaTest {
             BitSequence encodedA = DecimalGamma.Encode(new BigDecimal(a).toPlainString());
             BitSequence encodedB = DecimalGamma.Encode(new BigDecimal(b).toPlainString());
 
-            assertEquals(Double.compare(a, b), encodedA.toString().compareTo(encodedB.toString()), a + " " + b);
+            assertEquals(Double.compare(a, b), compare(encodedA.toString(), encodedB.toString()), a + " " + b);
         }
     }
 
@@ -120,6 +120,12 @@ class DecimalGammaTest {
 
     void validateInverse(String input) {
         assertEquals(input, DecimalGamma.Decode(DecimalGamma.Encode(input)).toString());
+    }
+
+    int compare(String a, String b) {
+        if (a.compareTo(b) < 0) return -1;
+        if (a.compareTo(b) > 0) return 1;
+        return 0;
     }
 
 
