@@ -56,4 +56,12 @@ public class BitSequence {
         }
         return out.toString();
     }
+
+    public boolean[] toBytes() {
+        boolean[] out = new boolean[this.bits.size()];
+        for (int i = 0; i < this.bits.size(); i++)
+            out[i] = this.bits.get(i);
+
+        return out;
+    }
 }

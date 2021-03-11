@@ -12,7 +12,6 @@ public class DecimalGamma {
         return DecimalGamma.Encode(new StringDecomposition(Integer.toString(d)));
     }
 
-
     public static BitSequence Encode(double d) {
         // TODO: Create & use DoubleDecomposition
         return DecimalGamma.Encode(new StringDecomposition(Double.toString(d)));
@@ -23,12 +22,22 @@ public class DecimalGamma {
         return DecimalGamma.Encode(new StringDecomposition(Float.toString(d)));
     }
 
+    public static BitSequence Encode(long d) {
+        // TODO: Create & use FloatDecomposition
+        return DecimalGamma.Encode(new StringDecomposition(Long.toString(d)));
+    }
+
     public static BitSequence Encode(BigDecimal d) {
         // TODO: Create & use BigDecimalDecomposition
         return DecimalGamma.Encode(new StringDecomposition(d.toPlainString()));
     }
 
-        public static BitSequence Encode(String d) {
+    public static BitSequence Encode(BigInteger d) {
+        // TODO: Create & use BigIntegerDecomposition
+        return DecimalGamma.Encode(new StringDecomposition(d.toString()));
+    }
+
+    public static BitSequence Encode(String d) {
         return DecimalGamma.Encode(new StringDecomposition(d));
     }
 
