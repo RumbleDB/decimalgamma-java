@@ -1,3 +1,5 @@
+package decimalgamma;
+
 import java.util.ArrayList;
 
 public class BitSequence {

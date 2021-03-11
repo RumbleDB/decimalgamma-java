@@ -1,3 +1,5 @@
+package decimalgamma;
+
 public abstract class DecimalDecomposition {
 
     abstract boolean isZero();

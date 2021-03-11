@@ -1,3 +1,6 @@
+package decimalgamma;
+
+
 public class LiteralDecomposition extends DecimalDecomposition {
 
     boolean isZero;
