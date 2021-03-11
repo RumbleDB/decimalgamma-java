@@ -1,11 +1,34 @@
 package decimalgamma;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.text.ParseException;
 import java.util.ArrayList;
 
 public class DecimalGamma {
 
-    public static BitSequence Encode(String d) {
+    public static BitSequence Encode(int d) {
+        // TODO: Create & use IntegerDecomposition
+        return DecimalGamma.Encode(new StringDecomposition(Integer.toString(d)));
+    }
+
+
+    public static BitSequence Encode(double d) {
+        // TODO: Create & use DoubleDecomposition
+        return DecimalGamma.Encode(new StringDecomposition(Double.toString(d)));
+    }
+
+    public static BitSequence Encode(float d) {
+        // TODO: Create & use FloatDecomposition
+        return DecimalGamma.Encode(new StringDecomposition(Float.toString(d)));
+    }
+
+    public static BitSequence Encode(BigDecimal d) {
+        // TODO: Create & use BigDecimalDecomposition
+        return DecimalGamma.Encode(new StringDecomposition(d.toPlainString()));
+    }
+
+        public static BitSequence Encode(String d) {
         return DecimalGamma.Encode(new StringDecomposition(d));
     }
 

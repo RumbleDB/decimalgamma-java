@@ -14,6 +14,7 @@ class DecimalGammaTest {
     static int fuzzyIterations = 100000;
     static int neighborIterations = 100000;
 
+
     @Test
     void testIntegerNeighboursOrdered() {
         for (int i = -neighborIterations; i < neighborIterations; i++) {
@@ -35,8 +36,8 @@ class DecimalGammaTest {
             double a = nextRandom(r);
             double b = nextRandom(r);
 
-            BitSequence encodedA = DecimalGamma.Encode(new BigDecimal(a).toPlainString());
-            BitSequence encodedB = DecimalGamma.Encode(new BigDecimal(b).toPlainString());
+            BitSequence encodedA = DecimalGamma.Encode(a);
+            BitSequence encodedB = DecimalGamma.Encode(b);
 
             assertEquals(Double.compare(a, b), compare(encodedA.toString(), encodedB.toString()), a + " " + b);
         }
