@@ -21,4 +21,24 @@
         <maven.compiler.target>8</maven.compiler.target>
     </properties>
 
+    <!-- as described here:
+        https://gitlab.inf.ethz.ch/help/user/packages/maven_repository/index.md#create-maven-packages-with-gitlab-cicd
+    -->
+    <repositories>
+        <repository>
+            <id>gitlab-maven</id>
+            <url>https://gitlab.inf.ethz.ch/api/v4/projects/14379/packages/maven</url>
+        </repository>
+    </repositories>
+    <distributionManagement>
+        <repository>
+            <id>gitlab-maven</id>
+            <url>https://gitlab.inf.ethz.ch/api/v4/projects/14379/packages/maven</url>
+        </repository>
+        <snapshotRepository>
+            <id>gitlab-maven</id>
+            <url>https://gitlab.inf.ethz.ch/api/v4/projects/14379/packages/maven</url>
+        </snapshotRepository>
+    </distributionManagement>
+
 </project>
