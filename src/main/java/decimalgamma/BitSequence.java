@@ -1,6 +1,10 @@
 package decimalgamma;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.BitSet;
 
 public class BitSequence {
     private final ArrayList<Boolean> bits = new ArrayList<>();
@@ -57,11 +61,20 @@ public class BitSequence {
         return out.toString();
     }
 
-    public boolean[] toBytes() {
-        boolean[] out = new boolean[this.bits.size()];
-        for (int i = 0; i < this.bits.size(); i++)
-            out[i] = this.bits.get(i);
+    // From https://stackoverflow.com/a/26944869
+    public byte[] toBytes() {
+        BitSet bits = new BitSet(this.bits.size());
+        for (int i = 0; i < this.bits.size(); i++) {
+            if (this.bits.get(i)) {
+                bits.set(i);
+            }
+        }
 
-        return out;
+        byte[] bytes = bits.toByteArray();
+        if (bytes.length * 8 >= this.bits.size()) {
+            return bytes;
+        }
+
+        return Arrays.copyOf(bytes, this.bits.size() / 8 + (this.bits.size() % 8 == 0 ? 0 : 1));
     }
 }

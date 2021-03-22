@@ -1,0 +1,2 @@
+publish:
+	mvn deploy

@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
+import java.util.BitSet;
 import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -132,9 +133,7 @@ class DecimalGammaTest {
     }
 
     int compare(String a, String b) {
-        if (a.compareTo(b) < 0) return -1;
-        if (a.compareTo(b) > 0) return 1;
-        return 0;
+        return Integer.compare(a.compareTo(b), 0);
     }
 
 
