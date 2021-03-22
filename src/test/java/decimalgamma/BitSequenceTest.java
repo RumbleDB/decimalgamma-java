@@ -18,4 +18,12 @@ class BitSequenceTest {
         s.appendBits(actual, length);
         assertEquals(expected, s.toString());
     }
+
+    @Test
+    void testEndianness() {
+        byte[] a = DecimalGamma.Encode(3).toBytes();
+        assertEquals(2, a.length);
+        assertEquals(161, Byte.toUnsignedInt(a[0]));
+        assertEquals(128, Byte.toUnsignedInt(a[1]));
+    }
 }

@@ -1,7 +1,5 @@
 package decimalgamma;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
@@ -66,9 +64,12 @@ public class BitSequence {
         BitSet bits = new BitSet(this.bits.size());
         for (int i = 0; i < this.bits.size(); i++) {
             if (this.bits.get(i)) {
-                bits.set(i);
+                // For each byte, MSB is at the end, i.e.
+                // 7 6 5 4 3 2 1 0 | 15 14 13 12 11 ...
+                bits.set(i / 8 * 8 + 7 - (i % 8));
             }
         }
+
 
         byte[] bytes = bits.toByteArray();
         if (bytes.length * 8 >= this.bits.size()) {
