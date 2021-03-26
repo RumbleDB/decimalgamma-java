@@ -31,20 +31,12 @@
         </repository>
     </repositories>
     <distributionManagement>
-        <repository>
-            <id>gitlab-maven</id>
-            <url>https://gitlab.inf.ethz.ch/api/v4/projects/14379/packages/maven</url>
-        </repository>
-        <snapshotRepository>
-            <id>gitlab-maven</id>
-            <url>https://gitlab.inf.ethz.ch/api/v4/projects/14379/packages/maven</url>
-        </snapshotRepository>
 
-    	<repository>
-     		<id>github</id>
-      		<name>GitHub Packages</name>
-      		<url>https://maven.pkg.github.com/octocat/hello-world</url>
-   	</repository>
+        <repository>
+            <id>github</id>
+            <name>GitHub Packages</name>
+            <url>https://maven.pkg.github.com/elwin/decimalgamma-java</url>
+        </repository>
 
     </distributionManagement>
 
