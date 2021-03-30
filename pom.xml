@@ -7,6 +7,17 @@
     <groupId>com.github.rumbledb</groupId>
     <artifactId>decimalgamma</artifactId>
     <version>1.0-SNAPSHOT</version>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.22.1</version>
+            </plugin>
+        </plugins>
+    </build>
+
     <dependencies>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -21,23 +32,13 @@
         <maven.compiler.target>8</maven.compiler.target>
     </properties>
 
-    <!-- as described here:
-        https://gitlab.inf.ethz.ch/help/user/packages/maven_repository/index.md#create-maven-packages-with-gitlab-cicd
-    -->
-    <repositories>
-        <repository>
-            <id>gitlab-maven</id>
-            <url>https://gitlab.inf.ethz.ch/api/v4/projects/14379/packages/maven</url>
-        </repository>
-    </repositories>
-    <distributionManagement>
 
+    <distributionManagement>
         <repository>
             <id>github</id>
             <name>GitHub Packages</name>
             <url>https://maven.pkg.github.com/elwin/decimalgamma-java</url>
         </repository>
-
     </distributionManagement>
 
 </project>
