@@ -22,7 +22,7 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>RELEASE</version>
+            <version>5.8.0-M1</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -30,6 +30,7 @@
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
 
@@ -37,7 +38,7 @@
         <repository>
             <id>github</id>
             <name>GitHub Packages</name>
-            <url>https://maven.pkg.github.com/elwin/decimalgamma-java</url>
+            <url>https://maven.pkg.github.com/RumbleDB/decimalgamma-java</url>
         </repository>
     </distributionManagement>
 
