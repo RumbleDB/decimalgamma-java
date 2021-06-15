@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
-import java.util.BitSet;
 import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -26,6 +25,7 @@ class DecimalGammaTest {
             BitSequence encodedB = DecimalGamma.Encode(b);
 
             assertTrue(encodedA.toString().compareTo(encodedB.toString()) < 0, a + " " + b);
+            assertTrue(compareBytes(encodedA.toBytes(), encodedB.toBytes()) < 0, a + " " + b);
         }
     }
 
@@ -41,7 +41,9 @@ class DecimalGammaTest {
             BitSequence encodedA = DecimalGamma.Encode(a);
             BitSequence encodedB = DecimalGamma.Encode(b);
 
-            assertEquals(Double.compare(a, b), compare(encodedA.toString(), encodedB.toString()), a + " " + b);
+            int expected = Double.compare(a, b);
+            assertEquals(expected, compareStrings(encodedA.toString(), encodedB.toString()), a + " " + b);
+            assertEquals(expected, compareBytes(encodedA.toBytes(), encodedB.toBytes()), a + " " + b);
         }
     }
 
@@ -133,8 +135,22 @@ class DecimalGammaTest {
         assertEquals(input, DecimalGamma.Decode(DecimalGamma.Encode(input)).toString());
     }
 
-    int compare(String a, String b) {
+    int compareStrings(String a, String b) {
         return Integer.compare(a.compareTo(b), 0);
+    }
+
+    // Taken from Rumble, ComparisonIterator
+    int compareBytes(byte[] l, byte[] r) {
+        int i = 0;
+        while (true) {
+            if (i == l.length && i == r.length) return 0;
+            if (i == l.length) return -1;
+            if (i == r.length) return 1;
+
+            int compare = Integer.compare(Byte.toUnsignedInt(l[i]), Byte.toUnsignedInt(r[i]));
+            if (compare != 0) return compare;
+            i++;
+        }
     }
 
 

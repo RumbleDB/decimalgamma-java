@@ -14,17 +14,17 @@ public class DecimalGamma {
 
     public static BitSequence Encode(double d) {
         // TODO: Create & use DoubleDecomposition
-        return DecimalGamma.Encode(new StringDecomposition(Double.toString(d)));
+        return DecimalGamma.Encode(new BigDecimal(d));
     }
 
     public static BitSequence Encode(float d) {
         // TODO: Create & use FloatDecomposition
-        return DecimalGamma.Encode(new StringDecomposition(Float.toString(d)));
+        return DecimalGamma.Encode(new BigDecimal(d));
     }
 
     public static BitSequence Encode(long d) {
         // TODO: Create & use FloatDecomposition
-        return DecimalGamma.Encode(new StringDecomposition(Long.toString(d)));
+        return DecimalGamma.Encode(new BigDecimal(d));
     }
 
     public static BitSequence Encode(BigDecimal d) {
@@ -34,7 +34,7 @@ public class DecimalGamma {
 
     public static BitSequence Encode(BigInteger d) {
         // TODO: Create & use BigIntegerDecomposition
-        return DecimalGamma.Encode(new StringDecomposition(d.toString()));
+        return DecimalGamma.Encode(new BigDecimal(d));
     }
 
     public static BitSequence Encode(String d) {
