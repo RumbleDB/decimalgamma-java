@@ -2,7 +2,7 @@
 
 Implementation in Java of the DecimalGamma encoding
 
-![Description of the encoding](https://www.dropbox.com/s/xqj8ra6fu97c9kx/DecimalGamma.png?dl=1)
+![Description of the encoding](DecimalGamma.png)
 
 ## Reference
 
